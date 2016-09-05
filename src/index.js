@@ -3,20 +3,36 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import './index.css';
 
+
+
 // const data = [
 //   {id: 1, author: "Pete Hunt", text: "This is one comment"},
 //   {id: 2, author: "Jordan Walke", text: "This is *another* comment"}
 // ];
 
+const tweetStore = [];
+
 const CommentBox = React.createClass({
   getInitialState: function() {
-    return {data: []};
+    return {data: tweetStore};
   },
   componentDidMount: function() {
-    let src = new EventSource('http://localhost:3100/api/sweepStakes/change-stream');
+    let src = new EventSource('http://localhost:3000/api/sweepStakes/change-stream');
     src.addEventListener('data', function(e) {
-      console.log(e.data);
-      this.setState({data: [e.data]});
+      // console.log(e.data);
+      tweetStore.push(e.data);
+      // widget to display tweet in twitter formatting
+      twttr.widgets.createTweet(
+        JSON.parse(e.data).data.tweet.id_str,
+        document.getElementById('root'),
+        {
+          align: 'center'
+        })
+        .then(function(el){
+          console.log("tweet has been displayed")
+        });
+
+      this.setState({data: tweetStore});
     }.bind(this), false);
   },
   render: function() {
@@ -32,27 +48,18 @@ const CommentBox = React.createClass({
 
 const CommentList = React.createClass({
   render: function() {
-    // const commentNodes = this.props.data.map(function(comment) {
-    //   return (
-    //     <Comment author={comment.author} key={comment.id}>
-    //       {comment.text}
-    //     </Comment>
-    //   );
-    // });
-    // return (
-    //   <div className="commentList">
-    //     {commentNodes}
-    //   </div>
-    // );
-    let tweet;
-    if(this.props.data[0]) {
-      tweet = JSON.parse(this.props.data[0]);
-      console.log('Tweet', tweet.data.tweet.text);
-      tweet = tweet.data.tweet.text;
-    }
+    console.log('this.props.data', this.props.data);
+    const commentNodes = this.props.data.map(function(tweetObject) {
+      const parsedTweet = JSON.parse(tweetObject).data.tweet;
+      // return (
+      //   <Comment author={parsedTweet.user.screen_name} key={parsedTweet.id}>
+      //   {parsedTweet.text}
+      //   </Comment>
+      // );
+    });
     return (
       <div className="commentList">
-        {tweet}
+        {commentNodes}
       </div>
     );
   }
@@ -73,7 +80,7 @@ const Comment = React.createClass({
     return (
       <div className="comment">
         <h2 className="commentAuthor">
-          {this.props.author}
+          @{this.props.author} Tweeted:
         </h2>
         {this.props.children}
       </div>
