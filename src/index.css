@@ -4,6 +4,12 @@ body {
   font-family: Helvetica;
 }
 
+ul {
+  list-style-type: none;
+  display: inline-block;
+  width: 100%;
+}
+
 .comment {
   width: 564px;
   margin: auto;
@@ -20,4 +26,38 @@ body {
 
 .twitter-tweet {
   margin-left: 33px;
+}
+
+/*div #loadAnimation {
+  width: 70%;
+  margin: auto;
+}*/
+
+.letter {
+  color: white;
+  background-color: #68FFAF;
+  display: inline-block;
+  align: left;
+  border-radius: 10px;
+  width: 3.5%;
+  text-align: center;
+  font-family: helvetica;
+  font-size: 30px;
+  font-weight: bold;
+  -webkit-animation-name: example;
+  -webkit-animation-duration: 6s;
+  animation-name: example;
+  animation-duration: 6s;
+}
+
+@-webkit-keyframes example {
+    0%   {background-color: #68FFAF;}
+    25%  {background-color: #E8AA96;}
+    50%  {background-color: #86FFEC;}
+    100% {background-color: #68FFAF;}
+}
+
+.letter:hover{
+  width: 4%;
+  transition-timing-function: ease-in-out;
 }

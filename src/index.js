@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import './index.css';
 import { Tweet } from 'react-twitter-widgets';
+import _ from 'lodash';
 
 const tweetStore = [];
 
-const CommentBox = React.createClass({
+const TweetList = React.createClass({
   getInitialState: function() {
     return {data: tweetStore};
   },
@@ -19,60 +20,71 @@ const CommentBox = React.createClass({
   },
   render: function() {
     return (
-      <div className="commentBox">
-        <h1>Cheetosio</h1>
-        <CommentList data={this.state.data} />
-        <CommentForm />
+      <div className="tweetList">
+        <Letter title="TweetSweeper" />
+        <TweetBox data={this.state.data} />
       </div>
     );
   }
 });
 
-const CommentList = React.createClass({
+const TweetBox = React.createClass({
   render: function() {
     console.log('this.props.data', this.props.data);
-    const commentNodes = this.props.data.map(function(tweetObject) {
+    const tweetNodes = this.props.data.map(function(tweetObject) {
       const parsedTweet = JSON.parse(tweetObject).data.tweet;
       console.log('parsedTweet', parsedTweet);
 
       return (
-        <Comment author={parsedTweet.user.screen_name} key={parsedTweet.id}>
+        <TweetComponent author={parsedTweet.user.screen_name} key={parsedTweet.id}>
           <Tweet
             tweetId={parsedTweet.id_str}
-            onLoad={() => console.log('Tweet is loaded!' + parsedTweet.text)}
+            onLoad={() => console.log('tweetComponent is loaded!' + parsedTweet.text)}
           />
-        </Comment>
+        </TweetComponent>
       );
     });
     return (
-      <div className="commentList">
-        {commentNodes}
+      <div className="tweetBox">
+        {tweetNodes}
       </div>
     );
   }
 });
 
-const CommentForm = React.createClass({
+const TweetComponent = React.createClass({
   render: function() {
     return (
-      <div className="commentForm">
-
-      </div>
-    );
-  }
-});
-
-const Comment = React.createClass({
-  render: function() {
-    return (
-      <div className="comment">
+      <div className="tweetComponent">
         {this.props.children}
       </div>
     );
   }
 });
 
+const Letter = React.createClass({
+  render: function() {
+    const title = this.props.title;
+    const letters = [];
+
+    _.forEach(title, letter => {
+      const letterListItem = (
+        <li className="letter">
+          {letter}
+        </li>
+      );
+      letters.push(letterListItem);
+    });
+
+    const letterList = (
+      <ul>{letters}</ul>
+    );
+
+    return letterList;
+  }
+});
+
 ReactDOM.render(
-  <CommentBox />,
+  <TweetList />,
   document.getElementById('root')
 );
